@@ -36,10 +36,10 @@ struct Territorio {
 }
 // --- Protótipos das Funções ---
 // Declarações antecipadas de todas as funções que serão usadas no programa, organizadas por categoria.
-// Funções de setup e gerenciamento de memória:
-// Funções de interface com o usuário:
-// Funções de lógica principal do jogo:
-// Função utilitária:
+// Funções de setup e gerenciamento de memória: alocarMapa, inicializarTerritorios, liberarMemoria
+// Funções de interface com o usuário: exibirMenuPrincipal, exibirMapa, exibirMissao
+// Funções de lógica principal do jogo: faseDeAtaque, simularAtaque, sortearMissao, verificarVitoria
+// Função utilitária: limparBufferEntrada
 
 // --- Função Principal (main) ---
 // Função principal que orquestra o fluxo do jogo, chamando as outras funções em ordem.
