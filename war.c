@@ -33,29 +33,88 @@ struct Territorio {
     char Nome [30];
     char Cor[10];
     int Tropas;
-}
+};
+
 // --- Protótipos das Funções ---
 // Declarações antecipadas de todas as funções que serão usadas no programa, organizadas por categoria.
 // Funções de setup e gerenciamento de memória: alocarMapa, inicializarTerritorios, liberarMemoria
+struct Territorio* alocarMapa(void);
+void inicializarTerritorios(struct Territorio* mapa);
+void liberarMemoria(struct Territorio* mapa);
+
 // Funções de interface com o usuário: exibirMenuPrincipal, exibirMapa, exibirMissao
+void exibirMenuPrincipal(void);
+void exibirMapa(const struct Territorio* mapa);
+void exibirMissao(int missao);
+
 // Funções de lógica principal do jogo: faseDeAtaque, simularAtaque, sortearMissao, verificarVitoria
+void faseDeAtaque(struct Territorio* mapa, const char* corJogador);
+void simularAtaque(struct Territorio* mapa, int origem, int destino);
+int sortearMissao(void);
+int verificarVitoria(const struct Territorio* mapa, const char* corJogador, int missao);
+
 // Função utilitária: limparBufferEntrada
+void limparBufferEntrada(void);
 
 // --- Função Principal (main) ---
 // Função principal que orquestra o fluxo do jogo, chamando as outras funções em ordem.
 int main() {
     // 1. Configuração Inicial (Setup):
     // - Define o locale para português.
+    setlocale(LC_ALL, "Portuguese");
     // - Inicializa a semente para geração de números aleatórios com base no tempo atual.
+    srand((unsigned int)time(NULL));
     // - Aloca a memória para o mapa do mundo e verifica se a alocação foi bem-sucedida.
-    // - Preenche os territórios com seus dados iniciais (tropas, donos, etc.).
+    struct Territorio* mapa = alocarMapa();
+    if (mapa == NULL) {
+        printf("Erro ao alocar memória para o mapa.\n");
+        return 1;
+    }
+    // - Preenche os territórios com seus dados iniciais (tropas, donos, etc.). 
+    scanf("%*c"); // Limpa o buffer de entrada
+    inicializarTerritorios(mapa);
+
+
     // - Define a cor do jogador e sorteia sua missão secreta.
+    char corJogador[10] = "Vermelho";
+    int missaoJogador = sortearMissao();
 
     // 2. Laço Principal do Jogo (Game Loop):
     // - Roda em um loop 'do-while' que continua até o jogador sair (opção 0) ou vencer.
+    int opcao;
+    do {
+        exibirMapa(mapa);
+        exibirMissao(missaoJogador);
+        exibirMenuPrincipal();
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+        switch (opcao) {
+            case 1:
+                faseDeAtaque(mapa, corJogador);
+                break;
+            case 2:
+                if (verificarVitoria(mapa, corJogador, missaoJogador)) {
+                    printf("Parabéns! Você cumpriu sua missão e venceu o jogo!\n");
+                    opcao = 0; // Encerra o jogo
+                } else {
+                    printf("Missão ainda não cumprida. Continue jogando!\n");
+                }
+                break;
+            case 0:
+                printf("Encerrando o jogo. Obrigado por jogar!\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+        printf("Pressione Enter para continuar...");
+        limparBufferEntrada();
+        getchar();
+    } while (opcao != 0);   
     // - A cada iteração, exibe o mapa, a missão e o menu de ações.
+    
     // - Lê a escolha do jogador e usa um 'switch' para chamar a função apropriada:
     //   - Opção 1: Inicia a fase de ataque.
+    
     //   - Opção 2: Verifica se a condição de vitória foi alcançada e informa o jogador.
     //   - Opção 0: Encerra o jogo.
     // - Pausa a execução para que o jogador possa ler os resultados antes da próxima rodada.
